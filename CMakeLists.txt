@@ -49,7 +49,7 @@ set(SOURCES
 add_executable(osgnav ${SOURCES})
 target_link_libraries(osgnav
 	${OPENSCENEGRAPH_LIBRARIES}
-	${VRJUGGLER22_LIBRARIES})
+	${VRJUGGLER_LIBRARIES})
 create_default_target_launcher(osgnav
 	FORWARD_ARGS
 	RUNTIME_LIBRARY_DIRS
