@@ -26,7 +26,7 @@
 
 #include <vrj/vrjConfig.h>
 
-#include <OsgNav.h>
+#include "OsgNav.h"
 
 #include <osg/Math>
 #include <osg/Geode>

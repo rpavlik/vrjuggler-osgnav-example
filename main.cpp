@@ -25,7 +25,7 @@
  *************** <auto-copyright.pl END do not edit this line> ***************/
 
 #include <cstdlib>
-#include <OsgNav.h>
+#include "OsgNav.h"
 
 // --- Lib Stuff --- //
 #include <vrj/Kernel/Kernel.h>
