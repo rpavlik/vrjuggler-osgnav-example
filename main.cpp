@@ -33,42 +33,39 @@
 //#define OSG_USE_IO_DOT_H
 
 
-int main(int argc, char* argv[])
-{
-   vrj::Kernel* kernel = vrj::Kernel::instance();  // Get the kernel
-   OsgNav* application = new OsgNav(kernel, argc, argv);             // Instantiate an instance of the app
+int main(int argc, char* argv[]) {
+	vrj::Kernel* kernel = vrj::Kernel::instance();  // Get the kernel
+	OsgNav* application = new OsgNav(kernel, argc, argv);             // Instantiate an instance of the app
 
-   if ( argc <= 2 )
-   {
-      // display some usage info (holding the user by the hand stuff)
-      //  this will probably go away once the kernel becomes separate
-      //  and can load application plugins.
-      std::cout<<"\n"<<std::flush;
-      std::cout<<"\n"<<std::flush;
+	if (argc <= 2) {
+		// display some usage info (holding the user by the hand stuff)
+		//  this will probably go away once the kernel becomes separate
+		//  and can load application plugins.
+		std::cout << "\n" << std::flush;
+		std::cout << "\n" << std::flush;
 
-      std::cout << "Usage: " << argv[0]
-         << " modelname vjconfigfile[0] vjconfigfile[1] ... vjconfigfile[n]\n"
-         << std::endl << std::endl;
+		std::cout << "Usage: " << argv[0]
+		          << " modelname vjconfigfile[0] vjconfigfile[1] ... vjconfigfile[n]\n"
+		          << std::endl << std::endl;
 
-      std::exit(EXIT_FAILURE);
-   }
+		std::exit(EXIT_FAILURE);
+	}
 
-   kernel->init(argc, argv);
+	kernel->init(argc, argv);
 
-   application->setModelFileName(std::string(argv[1]));
+	application->setModelFileName(std::string(argv[1]));
 
-   // Load any config files specified on the command line
-   for ( int i = 2; i < argc; ++i )
-   {
-      kernel->loadConfigFile(argv[i]);
-   }
+	// Load any config files specified on the command line
+	for (int i = 2; i < argc; ++i) {
+		kernel->loadConfigFile(argv[i]);
+	}
 
-   kernel->start();
+	kernel->start();
 
-   kernel->setApplication(application);
-   kernel->waitForKernelStop();
+	kernel->setApplication(application);
+	kernel->waitForKernelStop();
 
-   delete application;
+	delete application;
 
-   return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 }
