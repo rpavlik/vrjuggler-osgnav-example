@@ -47,11 +47,6 @@
 OsgNav::OsgNav(vrj::Kernel* kern, int& argc, char** argv)
 	: vrj::osg::App(kern) {
 	mFileToLoad = std::string("");
-
-#ifdef USE_REMOTE_NAV
-	// Initialize tweek and register RemoteNavSubjectImpl with the nameserver.
-	initTweek(argc, argv);
-#endif
 }
 
 void OsgNav::latePreFrame() {
@@ -74,16 +69,7 @@ void OsgNav::preFrame() {
 	}
 
 	float time_delta = diff_time.secf();
-
-	// Cluster debug code.
-	// std::cout << "CLUSTER Delta: " << diff_time.getBaseVal() << std::endl;
-	// std::cout << "CLUSTER Current: " << cur_time.getBaseVal() << "Last: "
-	//           << mLastTimeStamp.getBaseVal() << "\n" << std::endl;
-
 	mLastPreFrameTime = cur_time;
-
-	//vprDEBUG(vprDBG_ALL, vprDBG_CRITICAL_LVL) << "------- preFrame ------\n"
-	//                                          << vprDEBUG_FLUSH;
 
 	// Get wand data
 	gmtl::Matrix44f wandMatrix = mWand->getData();      // Get the wand matrix
@@ -122,33 +108,19 @@ void OsgNav::preFrame() {
 	mNavigator.update(time_delta);
 }
 
-void OsgNav::bufferPreDraw() {
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-}
-
 void OsgNav::initScene() {
-	//DeBugOut = Debug::getStream(0, 3, true, true, 1, true);
-
-	//std::cout << "---------- App:init() ---------------" << std::endl;
 	// Initialize devices
 	const std::string wand("VJWand");
 	const std::string vjhead("VJHead");
 	const std::string but0("VJButton0");
 	const std::string but1("VJButton1");
 	const std::string but2("VJButton2");
-	const std::string but3("VJButton3");
-	const std::string but4("VJButton4");
-	const std::string but5("VJButton5");
 
 	mWand.init(wand);
 	mHead.init(vjhead);
 	mButton0.init(but0);
 	mButton1.init(but1);
 	mButton2.init(but2);
-	mButton3.init(but3);
-	mButton4.init(but4);
-	mButton5.init(but5);
 
 	myInit();
 }
@@ -191,59 +163,4 @@ void OsgNav::myInit() {
 	// Add the transform to the tree
 	mNavTrans->addChild(mModelTrans.get());
 
-	// run optimization over the scene graph
-	// NOTE: Using the optimizer may cause problems with textures not showing
-	// up on all walls.
-//   osgUtil::Optimizer optimizer;
-//   optimizer.optimize(mRootNode.get());
-
-	// traverse the scene graph setting up all osg::GeoSet's so they will use
-	// OpenGL display lists.
-	//osgUtil::DisplayListVisitor dlv(
-	//   osgUtil::DisplayListVisitor::SWITCH_ON_DISPLAY_LISTS
-	//);
-	//mRootNode->accept(dlv);
 }
-
-void OsgNav::initTweek(int& argc, char* argv[]) {
-#ifdef USE_REMOTE_NAV
-	std::cout << "\n\nSTARTING TWEEK INITIALIZATION!!\n\n" << std::flush;
-
-	std::string name_context("OSG_REMOTE_NAV_");
-
-	try {
-		if (mCorbaManager.init(name_context, argc, argv).success()) {
-			try {
-				if (mCorbaManager.createSubjectManager().success()) {
-					RemoteNavSubjectImpl* remote_nav_interface =
-					    new RemoteNavSubjectImpl(&mNavigator);
-
-					mCorbaManager.getSubjectManager()->addInfoItem("OsgNav",
-					        "RemoteNav");
-					try {
-						mCorbaManager.getSubjectManager()->registerSubject(
-						    remote_nav_interface, "RemoteNavSubject"
-						);
-					} catch (...) {
-						std::cout << "Failed to register subject" << std::endl;
-					}
-				}
-			} catch (CORBA::Exception& ex) {
-				std::cout
-				        << "Caught an unknown CORBA exception when trying to register!"
-				        << std::endl;
-			}
-		}
-
-	} catch (...) {
-		std::cout << "Caught an unknown exception while initializing Tweek!"
-		          << std::endl;
-	}
-
-	std::cout << "\n\nDONE WITH TWEEK INITIALIZATION!!\n\n" << std::flush;
-#else
-	boost::ignore_unused_variable_warning(argc);
-	boost::ignore_unused_variable_warning(argv);
-#endif
-}
-

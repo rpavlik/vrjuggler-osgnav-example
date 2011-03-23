@@ -27,8 +27,6 @@
 #ifndef _OSG_NAV_
 #define _OSG_NAV_
 
-#include <vrj/vrjConfig.h>
-
 #include <iostream>
 #include <iomanip>
 #include <math.h>
@@ -43,10 +41,6 @@
 #include <osg/MatrixTransform>
 
 #include <osgUtil/SceneView>
-
-#ifdef TWEEK_HAVE_CXX
-#include <tweek/CORBA/CorbaManager.h>
-#endif
 
 #include "nav.h"
 
@@ -72,8 +66,6 @@ class OsgNav : public vrj::osg::App {
 
 		void myInit();
 
-		void initTweek(int& argc, char* argv[]);
-
 		virtual osg::Group* getScene() {
 			return mRootNode.get();
 		}
@@ -85,8 +77,6 @@ class OsgNav : public vrj::osg::App {
 			newSceneViewer->getLight()->setDiffuse(osg::Vec4(0.9f, 0.9f, 0.9f, 1.0f));
 			newSceneViewer->getLight()->setSpecular(osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		}
-
-		void bufferPreDraw();
 
 		// ----- Drawing Loop Functions ------
 		//
@@ -153,19 +143,12 @@ class OsgNav : public vrj::osg::App {
 		/** Time of the start of the last preframe */
 		vpr::Interval mLastPreFrameTime;
 
-#ifdef TWEEK_HAVE_CXX
-		tweek::CorbaManager mCorbaManager;
-#endif
-
 	public:
 		gadget::PositionInterface  mWand;     /**< the wand */
 		gadget::PositionInterface  mHead;     /**< the head */
 		gadget::DigitalInterface   mButton0;
 		gadget::DigitalInterface   mButton1;
 		gadget::DigitalInterface   mButton2;
-		gadget::DigitalInterface   mButton3;
-		gadget::DigitalInterface   mButton4;
-		gadget::DigitalInterface   mButton5;
 };
 
 
